@@ -6,12 +6,14 @@ import android.content.SharedPreferences;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 final class AppPreferences {
     private static final String PREFS_NAME = "NotificationWebhookPrefs";
     private static final String SELECTED_APPS = "SelectedApps";
     private static final String WEBHOOK_URL = "webhookUrl";
     private static final String FORWARDING_ENABLED = "forwardingEnabled";
+    private static final String DEVICE_ID = "deviceId";
 
     private AppPreferences() {}
 
@@ -64,5 +66,15 @@ final class AppPreferences {
 
     static void setForwardingEnabled(Context context, boolean enabled) {
         prefs(context).edit().putBoolean(FORWARDING_ENABLED, enabled).apply();
+    }
+
+    static synchronized String getDeviceId(Context context) {
+        SharedPreferences preferences = prefs(context);
+        String id = preferences.getString(DEVICE_ID, null);
+        if (id == null || id.isEmpty()) {
+            id = UUID.randomUUID().toString();
+            preferences.edit().putString(DEVICE_ID, id).apply();
+        }
+        return id;
     }
 }

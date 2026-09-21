@@ -1,6 +1,7 @@
 package com.example.notificationwebhookapp;
 
 import android.app.Notification;
+import android.os.Build;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
@@ -48,7 +49,9 @@ public class NotificationListener extends NotificationListenerService {
         }
         CharSequence title = notification.extras.getCharSequence(Notification.EXTRA_TITLE);
         String body = WebhookPayload.fromNotification(
-                posted.getPackageName(), title == null ? "" : title.toString(), content.toString());
+                posted.getPackageName(), title == null ? "" : title.toString(), content.toString(),
+                AppPreferences.getDeviceId(this), Build.MANUFACTURER + " " + Build.MODEL,
+                Build.VERSION.RELEASE);
         String id = null;
         try {
             id = PendingWebhookStore.write(this, body);

@@ -1,8 +1,12 @@
 <resources>
     <string name="app_name">Notification2Webhook</string>
     <string name="settings">Settings</string>
+    <string name="webhook_settings">Webhook Settings</string>
     <string name="enable_notifications">Grant Notification Access</string>
     <string name="save_apps">Save Apps</string>
+    <string name="search_apps">Search apps or package names</string>
+    <string name="loading_apps">Loading apps…</string>
+    <string name="no_apps_found">No matching apps</string>
     <string name="save">Save</string>
     <string name="listener_enabled">Notification access is enabled</string>
     <string name="listener_disabled">Notification access is disabled</string>

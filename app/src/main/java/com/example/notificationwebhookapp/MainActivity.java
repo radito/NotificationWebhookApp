@@ -7,11 +7,14 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -25,22 +28,37 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
     private final List<AppInfo> installedApps = new ArrayList<>();
+    private final List<AppInfo> visibleApps = new ArrayList<>();
     private AppListAdapter adapter;
     private TextView listenerStatus;
+    private EditText appSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        View root = findViewById(R.id.mainRoot);
+        SystemBarInsets.apply(getWindow(), root);
+        root.requestFocus();
 
         ListView appList = findViewById(R.id.appList);
         adapter = new AppListAdapter();
         appList.setAdapter(adapter);
+        appList.setEmptyView(findViewById(R.id.emptyApps));
         listenerStatus = findViewById(R.id.listenerStatus);
+        appSearch = findViewById(R.id.appSearch);
+        appSearch.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence text, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence text, int start, int before, int count) {
+                filterApps(text.toString());
+            }
+            @Override public void afterTextChanged(Editable text) {}
+        });
 
         findViewById(R.id.settingsButton).setOnClickListener(
                 view -> startActivity(new Intent(this, SettingsActivity.class)));
@@ -88,10 +106,23 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(() -> {
                 installedApps.clear();
                 installedApps.addAll(apps);
-                adapter.notifyDataSetChanged();
+                ((TextView) findViewById(R.id.emptyApps)).setText(R.string.no_apps_found);
+                filterApps(appSearch.getText().toString());
                 findViewById(R.id.saveAppsButton).setEnabled(true);
             });
         }).start();
+    }
+
+    private void filterApps(String search) {
+        String query = search.trim().toLowerCase(Locale.ROOT);
+        visibleApps.clear();
+        for (AppInfo app : installedApps) {
+            if (app.name.toLowerCase(Locale.ROOT).contains(query)
+                    || app.packageName.toLowerCase(Locale.ROOT).contains(query)) {
+                visibleApps.add(app);
+            }
+        }
+        adapter.notifyDataSetChanged();
     }
 
     private void saveSelectedApps() {
@@ -135,8 +166,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private class AppListAdapter extends BaseAdapter {
-        @Override public int getCount() { return installedApps.size(); }
-        @Override public AppInfo getItem(int position) { return installedApps.get(position); }
+        @Override public int getCount() { return visibleApps.size(); }
+        @Override public AppInfo getItem(int position) { return visibleApps.get(position); }
         @Override public long getItemId(int position) { return position; }
 
         @Override

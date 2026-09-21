@@ -9,12 +9,20 @@
         android:id="@+id/webhookUrlEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Webhook URL" />
+        android:hint="@string/webhook_hint"
+        android:importantForAutofill="no"
+        android:inputType="textUri"
+        android:maxLength="2048" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/http_warning" />
 
     <Button
         android:id="@+id/saveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Save" />
+        android:text="@string/save" />
 
 </LinearLayout>

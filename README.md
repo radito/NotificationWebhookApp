@@ -1,101 +1,44 @@
 # Notification2Webhook
 
-## Table of Contents
+An Android app that forwards notifications from selected apps to a webhook. Notification text that contains a JSON object or array is sent unchanged, which is useful for services that put a JSON webhook body in a notification. Other text is sent as a JSON object with `package`, `title`, and `text` fields.
 
-1. [Introduction](#introduction)
-2. [Features](#features)
-3. [Installation](#installation)
-4. [Usage](#usage)
-5. [Troubleshooting](#troubleshooting)
-6. [Contributing](#contributing)
-7. [License](#license)
+## Requirements
 
-## Introduction
+- Android 12 (API 31) or newer
+- Notification listener access
+- A reachable HTTP or HTTPS webhook URL
 
-**Notification2Webhook** is an Android application designed to forward notifications from selected apps to a specified webhook URL. This is esspecially useful for Tradingview Indicators to send buy and sell signals to a trading bot without having to pay for a Tradingview account. 
+## Setup
 
-## Features
+1. Install the APK and open the app.
+2. Tap **Settings**, enter your webhook URL, and save it. HTTPS is recommended because HTTP exposes notification contents in transit.
+3. Select the apps to monitor and tap **Save Apps**. System apps are included in the list.
+4. Tap **Grant Notification Access** and grant Notification2Webhook notification access in Android settings. Return to the app and check that the status says access is enabled.
+5. Leave **Forward notifications** on. Turn it off to stop forwarding and cancel queued deliveries. A request already in flight may finish.
 
-- **Notification Forwarding**: Forward notifications from selected apps to a specified webhook URL.
-- **Notification Listener**: Listen for notifications from selected apps.
-- **Toggle Notification Forwarding**: Enable or disable notification forwarding with a toggle switch.
-- **App Selection**: Select which apps to monitor for notifications.
-- **Webhook URL Configuration**: Set the webhook URL where notifications will be forwarded.
-- **Permission Management**: Request necessary permissions to read notifications and forward them.
+Only notifications from saved app selections are queued. Notifications without text are skipped. Delivery runs as Android background work, so it may be delayed. Temporary network errors and HTTP 408, 429, or 5xx responses are retried up to five attempts. HTTP 4xx responses other than 408 and 429 are treated as permanent failures. A webhook may receive a duplicate if the app is interrupted after the server accepts a request but before Android records its completion.
 
-## Installation
+The webhook URL and app selections are stored in private app preferences. Pending webhook bodies are stored in private app storage until delivery finishes, and app data is excluded from backup. The app does not log notification contents.
 
-### Prerequisites
+The app requests broad package visibility so the selection list can include notification sources without launcher icons. Google Play restricts this permission and requires a [permission declaration](https://support.google.com/googleplay/android-developer/answer/10158779) if you distribute the app there.
 
-- Android device running Android 7.0 (Nougat) or higher.
-- Internet connection for downloading the app and configuring the webhook URL.
+## Build
 
-### Steps
+Open the project in Android Studio, or install Android SDK Platform 35 and run:
 
-1. **Download the APK**:
-   - Download the `Notification2Webhook.apk` file from the [releases page](https://github.com/BigShoots/NotificationWebhookApp/releases).
+```sh
+./gradlew testDebugUnitTest lintDebug assembleDebug
+```
 
-2. **Install the APK**:
-   - Transfer the downloaded APK file to your Android device.
-   - Open the file manager on your device and navigate to the location where you transferred the APK file.
-   - Tap on the APK file to start the installation process.
-   - Follow the on-screen instructions to complete the installation.
-
-3. **Grant Permissions**:
-   - After installation, open the app.
-   - The app will prompt you to grant the necessary permissions to read notifications and forward them. Follow the on-screen instructions to grant these permissions.
-
-## Usage
-
-### Setting Up the Webhook URL
-
-1. **Open the App**:
-   - Launch `Notification2Webhook` from your app drawer.
-
-2. **Configure the Webhook URL**:
-   - In the main screen, tap on the "Set Webhook URL" button.
-   - Enter the webhook URL where you want to forward the notifications.
-   - Tap "Save" to save the webhook URL.
-
-### Selecting Apps to Monitor
-
-1. **Open the App**:
-   - Launch `Notification2Webhook` from your app drawer.
-
-2. **Select Apps**:
-   - In the main screen, you will see a list of installed apps.
-   - Check the box next to each app you want to monitor for notifications.
-
-3. **Save App List**:
-   - Tap the Save Apps button to save the app list.
-  
-
-### Enabling Notification Forwarding
-
-1. **Open the App**:
-   - Launch `Notification2Webhook` from your app drawer.
-
-2. **Enable Notification Forwarding**:
-   - Toggle the "Forward Notifications" switch to enable or disable notification forwarding.
+The debug APK is written to `app/build/outputs/apk/debug/app-debug.apk`. The [GitHub Actions workflow](.github/workflows/android.yml) runs on pushes, pull requests, and manual dispatch; each successful run uploads the debug APK as a workflow artifact. The artifact is a debug build, not a signed release.
 
 ## Troubleshooting
 
-### Common Issues and Solutions
-
-1. **App Crashes on Launch**:
-   - **Cause**: The app might be crashing due to missing permissions or incorrect configuration.
-   - **Solution**: Ensure that you have granted all necessary permissions. Check the logcat output for any error messages that can provide more information.
-
-2. **Notifications Are Not Being Forwarded**:
-   - **Cause**: The app might not have the necessary permissions to read notifications, or the webhook URL might be incorrect.
-   - **Solution**: Verify that the app has the necessary permissions. Check the webhook URL configuration and ensure it is correct.
-
-
-
-## Contributing
-
-We welcome contributions from the community! If you have any suggestions, bug reports, or feature requests, please open an issue or submit a pull request on our [GitHub repository](https://github.com/BigShoots/NotificationWebhookApp).
+- If the status says notification access is disabled, enable the listener in Android settings.
+- If nothing is forwarded, confirm the app selection was saved, the forwarding switch is on, and the webhook URL is reachable from the device.
+- Logcat reports webhook HTTP status codes and delivery errors under `WebhookWorker`. It does not print notification bodies or the URL.
+- HTTP webhooks are supported. A server error, invalid URL, or background network restriction can still prevent delivery.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+MIT; see [LICENSE](LICENSE).

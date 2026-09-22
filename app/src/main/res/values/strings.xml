@@ -15,4 +15,11 @@
     <string name="url_saved">Webhook URL saved</string>
     <string name="webhook_hint">https://example.com/webhook</string>
     <string name="http_warning">HTTPS is recommended. HTTP sends notification contents without encryption.</string>
+    <string name="send_test_payload">Send Test Payload</string>
+    <string name="sending_test_payload">Sending test payload…</string>
+    <string name="test_payload_title">Notification2Webhook test</string>
+    <string name="test_payload_message">Test payload sent from Notification2Webhook.</string>
+    <string name="test_payload_success">Test payload sent successfully (HTTP %1$d).</string>
+    <string name="test_payload_http_error">Webhook rejected the test payload (HTTP %1$d).</string>
+    <string name="test_payload_network_error">Could not reach webhook: %1$s</string>
 </resources>

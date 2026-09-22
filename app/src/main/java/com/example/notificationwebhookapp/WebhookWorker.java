@@ -8,12 +8,6 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class WebhookWorker extends Worker {
@@ -22,10 +16,6 @@ public class WebhookWorker extends Worker {
     static final String KEY_URL = "url";
     private static final String TAG = "WebhookWorker";
     private static final int MAX_ATTEMPTS = 5;
-    private static final OkHttpClient CLIENT = new OkHttpClient.Builder()
-            .callTimeout(20, TimeUnit.SECONDS)
-            .build();
-
     public WebhookWorker(@NonNull Context context, @NonNull WorkerParameters parameters) {
         super(context, parameters);
     }
@@ -44,11 +34,7 @@ public class WebhookWorker extends Worker {
         }
         try {
             String body = PendingWebhookStore.read(getApplicationContext(), id);
-            Request request = new Request.Builder()
-                    .url(WebhookUrl.normalize(url))
-                    .post(RequestBody.create(body, MediaType.get("application/json; charset=utf-8")))
-                    .build();
-            try (Response response = CLIENT.newCall(request).execute()) {
+            try (Response response = WebhookClient.newCall(url, body).execute()) {
                 if (response.isSuccessful()) {
                     PendingWebhookStore.delete(getApplicationContext(), id);
                     return Result.success();

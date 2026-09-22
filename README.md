@@ -11,7 +11,7 @@ An Android app that forwards notifications from selected apps to a webhook. Ever
 ## Setup
 
 1. Install the APK and open the app.
-2. Tap **Settings**, enter your webhook URL, and save it. For the sibling Node server, use `http://<server-address>:3001/notify` (or its HTTPS URL). The address must be reachable from the phone. HTTPS is recommended because HTTP exposes notification contents in transit.
+2. Tap **Settings**, enter your webhook URL, and use **Send Test Payload** to verify it. Save the URL after it succeeds. For the sibling Node server, use `http://<server-address>:3001/notify` (or its HTTPS URL). The address must be reachable from the phone. HTTPS is recommended because HTTP exposes notification contents in transit.
 3. Search by app name or package ID, select the apps to monitor, and tap **Save Apps**. System apps are included in the list.
 4. Tap **Grant Notification Access** and grant Notification2Webhook notification access in Android settings. Return to the app and check that the status says access is enabled.
 5. Leave **Forward notifications** on. Turn it off to stop forwarding and cancel queued deliveries. A request already in flight may finish.

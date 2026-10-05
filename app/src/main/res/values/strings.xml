@@ -1,6 +1,14 @@
 <resources>
     <string name="app_name">Notification2Webhook</string>
     <string name="settings">Settings</string>
+    <string name="back">Back</string>
+    <string name="notification_access">Notification access</string>
+    <string name="selected_apps">Apps to forward</string>
+    <plurals name="selected_apps_count">
+        <item quantity="one">%1$d app selected</item>
+        <item quantity="other">%1$d apps selected</item>
+    </plurals>
+    <string name="webhook_url">Webhook URL</string>
     <string name="webhook_settings">Webhook Settings</string>
     <string name="enable_notifications">Grant Notification Access</string>
     <string name="save_apps">Save Apps</string>

@@ -19,7 +19,7 @@ jobs:
           java-version: '17'
       - uses: android-actions/setup-android@v4
       - name: Install Android SDK
-        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+        run: sdkmanager "platforms;android-36" "build-tools;35.0.0"
       - uses: gradle/actions/setup-gradle@v6
       - name: Test, lint, and build APK
         run: ./gradlew testDebugUnitTest lintDebug assembleDebug --no-daemon

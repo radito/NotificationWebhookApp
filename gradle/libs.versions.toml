@@ -1,5 +1,19 @@
 [versions]
-agp = "8.8.2"
+agp = "8.10.1"
+kotlin = "2.3.20"
+# Last release supporting compile SDK 36; 0.9.x requires SDK 37.
+miuix = "0.8.8"
+compose = "1.10.3"
+activity = "1.12.4"
+lifecycle = "2.10.0"
+
+[libraries]
+miuix-ui = { module = "top.yukonga.miuix.kmp:miuix-android", version.ref = "miuix" }
+compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose" }
+activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity" }
+lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

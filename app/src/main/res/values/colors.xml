@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
+    <color name="window_background">#F7F7F7</color>
+    <color name="miuix_primary">#3482FF</color>
+    <bool name="light_system_bars">true</bool>
 </resources>

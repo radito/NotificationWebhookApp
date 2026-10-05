@@ -2,6 +2,7 @@ package com.example.notificationwebhookapp;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.provider.Settings;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -13,7 +14,7 @@ final class AppPreferences {
     private static final String SELECTED_APPS = "SelectedApps";
     private static final String WEBHOOK_URL = "webhookUrl";
     private static final String FORWARDING_ENABLED = "forwardingEnabled";
-    private static final String DEVICE_ID = "deviceId";
+    private static final String FALLBACK_DEVICE_ID = "deviceId";
 
     private AppPreferences() {}
 
@@ -69,11 +70,17 @@ final class AppPreferences {
     }
 
     static synchronized String getDeviceId(Context context) {
+        String androidId = Settings.Secure.getString(
+                context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        if (androidId != null && !androidId.isEmpty()) {
+            return androidId;
+        }
+
         SharedPreferences preferences = prefs(context);
-        String id = preferences.getString(DEVICE_ID, null);
+        String id = preferences.getString(FALLBACK_DEVICE_ID, null);
         if (id == null || id.isEmpty()) {
             id = UUID.randomUUID().toString();
-            preferences.edit().putString(DEVICE_ID, id).apply();
+            preferences.edit().putString(FALLBACK_DEVICE_ID, id).apply();
         }
         return id;
     }
